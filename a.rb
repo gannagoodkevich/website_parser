@@ -5,22 +5,27 @@ require 'curb'
 require_relative 'data_loader'
 require_relative 'page_loader'
 
-CSV.open("b.csv", "w", :write_headers=> true, :headers => ["Name","Price","Image"]) do |csv|
-  csv << [1, 2]
-end
-
-require 'open-uri'
-
 i=2
 
-#puts Curl.get("https://www.petsonic.com/snacks-huesos-para-perros/?p=#{i}").body_str.empty?
+link  = ''
+file = ''
 
-about_products = Array.new();
-
-while !Curl.get("https://www.petsonic.com/snacks-huesos-para-perros/?p=#{i}").body_str.empty? do
-  page_loader = PageLoader.new("https://www.petsonic.com/snacks-huesos-para-perros/?p=#{i}")
-  page_loader.load_data_from_page
-  i+=1
+ARGV.each do |argument|
+  link = argument.gsub('--link=', '') if argument.include?('link')
+  file = argument.gsub('--file=', '') if argument.include?('file')
 end
 
-puts about_products.inspect
+puts 'Start processing'
+
+#puts Curl.get("https://www.petsonic.com/snacks-huesos-para-perros/?p=#{i}").body_str.empty?
+puts Curl.get("https://www.petsonic.com/snacks-huesos-para-perros/?p=7").body_str.empty?
+about_products = Array.new();
+while !Curl.get(link.concat("?p=#{i}")).body_str.empty? do
+  puts link
+  page_loader = PageLoader.new(link, file)
+  page_loader.load_data_from_page
+  link = link.gsub("?p=#{i}", '')
+  puts link
+  i+=10
+  puts "page #{i}"
+end

@@ -32,6 +32,7 @@ class DataLoader
     @html_page_with_info.xpath('//h1[@class="product_main_name"]').each do |name|
       @date_about_product[:name] = name.content
     end
+    puts  @date_about_product[:name]
   end
 
   def find_size
