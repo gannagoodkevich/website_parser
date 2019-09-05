@@ -10,10 +10,6 @@ class PageLoader
   def load_data_from_page
     curr_page =  Curl.get(@url).body_str
     html_curr_page = Nokogiri::HTML(curr_page)
-    File.open('b.csv', 'w') {|file| file.truncate(0) }
-    CSV.open("b.csv", "ab", :write_headers=> true, :headers => ["Name","Price","Image"]) do |csv|
-      
-    end
     html_curr_page.xpath('//a[@class="product-name"]/@href').each do |link|
       link.to_s.gsub(".html", "/")
       data_loader = DataLoader.new(link)
@@ -23,7 +19,7 @@ class PageLoader
   end
 
   def write_info_to_csv(date_about_product)
-    CSV.open("b.csv", "ab") do |csv|
+    CSV.open(@file, "a+") do |csv|
       index = 0
       date_about_product[:size].each do |size|
         size = size.insert(0, ' - ')
