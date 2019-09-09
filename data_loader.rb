@@ -5,6 +5,7 @@ class DataLoader
     page_with_info =  Curl.get(url).body_str
     @html_page_with_info = Nokogiri::HTML(page_with_info)
     @date_about_product = Hash.new(0);
+    @page_url = url
   end
 
   def load_data
@@ -32,8 +33,12 @@ class DataLoader
     @html_page_with_info.xpath('//h1[@class="product_main_name"]').each do |name|
       @date_about_product[:name] = name.content
     end
-    puts  @date_about_product[:name] << ' loaded'
-    @date_about_product[:name] = @date_about_product[:name].gsub(' loaded', '')
+    unless @date_about_product[:name].eql?(0)
+      puts  @date_about_product[:name] << ' loaded'
+      @date_about_product[:name] = @date_about_product[:name].gsub(' loaded', '')
+    else
+      puts "This url #{@page_url} is unvalid!:("
+    end
   end
 
   def find_size
